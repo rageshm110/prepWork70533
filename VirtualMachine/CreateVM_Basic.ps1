@@ -14,7 +14,7 @@ Login-AzureRmAccount -Subscription 'Developer Program Benefit'
 $rgName = 'Azure70533'
 $rgLocation = 'centralus'
 $azureLocations = Get-AzureRmLocation
-if ($azureLocations.location -contains $vmLocation)
+if ($azureLocations.location -contains $rgLocation)
     {
         Write-Host '>>>>> Creating resource group <<<<<'
         New-AzureRmResourceGroup -Name $rgName -Location $rgLocation # Can store the result into a variable
@@ -25,7 +25,7 @@ if ($azureLocations.location -contains $vmLocation)
         if ($storageNameCheck.NameAvailable -eq 'True')
         {
             Write-host ">>>>> Creating new storage account <<<<<" -ForegroundColor Yellow
-            $storeAcc = New-AzureRmStorageAccount -ResourceGroupName $rgName -Name $storeAccName -SkuName 'Standard_LRS' -Kind 'Storage' -Location $vmLocation
+            $storeAcc = New-AzureRmStorageAccount -ResourceGroupName $rgName -Name $storeAccName -SkuName 'Standard_LRS' -Kind 'Storage' -Location $rgLocation
             ######################################################################################################
             # Network configuration
             $subnetName = $rgName + 'vmSubnet';
@@ -42,10 +42,10 @@ if ($azureLocations.location -contains $vmLocation)
             $vmName = $rgName + 'vm01' # VM Name
             $vmHostName = 'win1709srv01' # just to distinguish between vm and host names
             $vmSize = 'Basic_A0'
-            $availableVmSizes = Get-AzureRmVMSize -Location $vmLocation | Select-Object -ExpandProperty Name
+            $availableVmSizes = Get-AzureRmVMSize -Location $rgLocation | Select-Object -ExpandProperty Name
             if($availableVmSizes -contains $vmSize)
             {
-                "Specifized size VM is availabe @ {0} location." -f $vmLocation | Write-Host
+                "Specifized size VM is availabe @ {0} location." -f $rgLocation | Write-Host
                 $vmCred = Get-Credential -Message 'Admin account for vm' -UserName 'vmAdmin' # VM admin credential
 
                 $vmConfig = New-AzureRmVMConfig -VMName $vmName -VMSize $vmSize
@@ -64,7 +64,7 @@ if ($azureLocations.location -contains $vmLocation)
             }
             else
             {
-                "Specifized size VM is NOT AVAILABLE @ {0} location." -f $vmLocation | Write-Host
+                "Specifized size VM is NOT AVAILABLE @ {0} location." -f $rgLocation | Write-Host
             }
         }
         else
