@@ -6,13 +6,13 @@ Clear-Host
 # vm = virtual machine
 
 # login to azure
-#$azureLoginAccount = Add-AzureRmAccount -Credential (Get-Credential -Message 'Azure login credential.' -UserName 'rageshtr@live.com')
+#$azureLoginAccount = Add-AzureRmAccount -Credential (Get-Credential -Message 'Azure login credential.' -UserName '')
 Login-AzureRmAccount -Subscription 'Developer Program Benefit'
 # Non-interatcive using microsoft live account is disabled.
 
 # Basic information required for configuring VM
 $rgName = 'Azure70533'
-$rgLocation = 'centralus'
+$rgLocation = 'westus2'
 $azureLocations = Get-AzureRmLocation
 if ($azureLocations.location -contains $rgLocation)
     {
@@ -35,7 +35,8 @@ if ($azureLocations.location -contains $rgLocation)
 
             $vmSubnet = New-AzureRmVirtualNetworkSubnetConfig -Name 'Azure70533vmSubNet' -AddressPrefix 10.0.0.0/24
             $vmPublicIP = New-AzureRmPublicIpAddress -Name 'Azure70533vmIPAddr' -ResourceGroupName $rgName -Location $rgLocation -AllocationMethod Dynamic # there gonna be modification to output object
-            $vmNic = New-AzureRmNetworkInterface -Name $vmNicName -ResourceGroupName $rgName -Location $rgLocation -SubnetId $vmVirtualNetwork.Subnets[0].Id -PublicIpAddressId $vmPublicIP.IpAddress
+            $vmVnet = New-AzureRMVirtualNetWork -Name $vnetName -ResourceGroupName $rgName -Location $rgLocation -AddressPrefix 10.0.0.0/16 -Subnet $vmSubnet
+            $vmNic = New-AzureRmNetworkInterface -Name $vmNicName -ResourceGroupName $rgName -Location $rgLocation -SubnetId $vmVnet.Subnets[0].Id -PublicIpAddressId $vmPublicIP.Id
 
             ######################################################################################################
             # VM spacific variables
