@@ -62,6 +62,7 @@ if ($azureLocations.location -contains $rgLocation)
 
                 Write-Host '>>>>> Initialising VM creation <<<<<'
                 New-AzureRmVM -ResourceGroupName $rgName -Location $rgLocation -VM $vmConfig
+				# with my current subscription choice there are some limitations on the VM_Size and available locations.
             }
             else
             {
